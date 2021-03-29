@@ -6,73 +6,68 @@ public class FireRing {
   private boolean render = true;
   private boolean debug = false;
   private PVector debugPosition = new PVector(0,0);
-
-  public FireRing () {
+  
+  public FireRing() {
     this.position = new PVector(0, 0);
     this.radius = 100;
     this.velocityShrink = 0;
     this.damage = 0;
   }
-
-  public FireRing (PVector position, float radius, float velocityShrink, float damage) {
+  
+  public FireRing(PVector position, float radius, float velocityShrink, float damage) {
     this.position = position;
     this.radius = radius;
     this.velocityShrink = velocityShrink;
     this.damage = damage;
   }
-
-  public void update(){
-    if(this.radius > 0){
+  
+  public void update() {
+    if (this.radius > 0) {
       this.radius -= this.velocityShrink;
     }
-
-     if (this.render) {
+    
+    if (this.render) {
       this.draw();
     }
   }
-
+  
   private void draw() {
-    if(this.render){
+    if (this.render) {
       noFill();
       stroke(255, 0, 0);
       circle(this.position.x, this.position.y, this.radius);
     }
     
-    if(this.debug){
+    if (this.debug) {
       this.writeDebug("Ring radius: ", String.valueOf(this.radius), this.debugPosition, 0);
-      this.writeDebug("Ring position: ", "( " + this.position.x +" , "+ this.position.y +" )", this.debugPosition, 1);
+      this.writeDebug("Ring position: ", "( " + this.position.x + " , " + this.position.y + " )", this.debugPosition, 1);
     }
   }
-
-  public void setRender(boolean render) {
-    this.render = render;
-  }
-
-  public PVector getPosition(){
-    return this.position;
-  }
   
-  public float getVelocityShrink(){
-    return this.velocityShrink;
-  }
-  public void setVelocityShrink(float velocityShrink){
-    this.velocityShrink = velocityShrink;
-  }  
-
-  public void setDebugPosition(PVector debugPosition){
-    this.debugPosition = debugPosition;
-  }
-
-  public void setDebug(boolean debug) {
-    this.debug = debug;
-  }
-
-  private void writeDebug(String label, String value, PVector position, int line){
+  private void writeDebug(String label, String value, PVector position, int line) {
     fill(255);
     textAlign(RIGHT);
-    text(label, position.x, position.y + (line*20));
+    text(label, position.x, position.y + (line * 20));
     textAlign(LEFT);
-    text(value, position.x, position.y + (line*20));
+    text(value, position.x, position.y + (line * 20));
   }
+  
+  // getters and setters
+  public float getDamage() { return this.damage; }
+  public void setDamage(float damage) { this.damage = damage; }
+  
+  public void setDebug(boolean debug) { this.debug = debug; }
 
+  public void setDebugPosition(PVector debugPosition) { this.debugPosition = debugPosition; }
+  
+  public PVector getPosition() { return this.position; }
+
+  public void setRender(boolean render) { this.render = render; }
+
+  public float getRadius() { return this.radius; }
+  public void setRadius(float radius) { this.radius = radius; }
+  
+  public float getVelocityShrink() { return this.velocityShrink; }
+  public void setVelocityShrink(float velocityShrink) { this.velocityShrink = velocityShrink; }  
+ 
 }
