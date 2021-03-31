@@ -3,6 +3,7 @@ public class Agent {
   private int size;
   private boolean render = true;
   private int direction = 0;
+  private float speed = 1;
 
   private float pointerSize;
   private float pointerlength;
@@ -24,6 +25,7 @@ public class Agent {
   }
   
   public void update() {
+    this.move();
     
     if (this.render) {
       this.draw();
@@ -42,6 +44,15 @@ public class Agent {
     ellipse(0, 0, size, size);
 
     popMatrix();
+  }
+  
+  private void move() {
+    float angle = radians(this.direction);
+    float x = cos(angle) * this.speed;
+    float y = sin(angle) * this.speed;
+
+    this.position.x += x;
+    this.position.y += y;
   }
   
   public void setRender(boolean render) {
