@@ -9,6 +9,10 @@ public class Agent {
 
   private float pointerSize;
   private float pointerlength;
+
+  // debuggers
+  public boolean debug = false;
+  public color dye = color(255);
   
   public Agent() {
     this.position = new PVector(0, 0);
@@ -36,10 +40,14 @@ public class Agent {
     if (this.render) {
       this.draw();
     }
+    
+    if (this.debug) {
+      this.writeDebug("", String.valueOf(this.health), new PVector(this.position.x -this.size, (this.position.y -this.size)), 0);
+    }
   }
   
   private void draw() {
-    fill(255, map(this.health, 0, 100, 0, 255));
+    fill(this.dye, map(this.health, 0, 100, 0, 255));
     noStroke();
 
     pushMatrix();
@@ -77,5 +85,13 @@ public class Agent {
     if (this.health <= 0) {
       this.alive = false;
     }
+  }
+  
+  private void writeDebug(String label, String value, PVector position, int line) {
+    fill(this.dye);
+    textAlign(RIGHT);
+    text(label, position.x, position.y + (line * 20));
+    textAlign(LEFT);
+    text(value, position.x, position.y + (line * 20));
   }
 }

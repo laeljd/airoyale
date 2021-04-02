@@ -15,7 +15,10 @@ void setup() {
   for (int i = 0; i < nAgents; i++) {
     float x = random(-200, 200);
     float y = random(-200, 200);
-    agents.add(new Agent(new PVector(x, y), 15));
+    Agent agent = new Agent(new PVector(x, y), 15);
+    agent.debug = true;
+    agent.dye = color(random(50, 255), random(50, 255), random(50, 255));
+    agents.add(agent);
   }
 
   fireRing = new FireRing(new PVector(0, 0), width, 0.5, 1);
