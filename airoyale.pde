@@ -8,9 +8,11 @@ int width = 512;
 int height = 512;
 int translateX = width / 2;
 int translateY = height / 2;
+boolean loop = false;
 
 void setup() {
   size(1024, 512);
+  noLoop();
 
   for (int i = 0; i < nAgents; i++) {
     float x = random(-200, 200);
@@ -37,3 +39,27 @@ void draw() {
   fireRing.update();
   fireRing.dealDamage(agents);
 }
+
+void keyPressed() {
+  if (key == 32) loop = !loop;
+
+  if(!loop) writeDebug("pausado. SPACE ou MOUSE 1", "", new PVector(translateX, translateY), -1, color(128, 128, 128));
+
+  if(loop) loop(); else noLoop();
+}
+
+void mousePressed() {
+  loop = !loop;
+
+  if(!loop) writeDebug("pausado. SPACE ou MOUSE 1", "", new PVector(translateX, translateY), -1, color(128, 128, 128));
+
+  if(loop) loop(); else noLoop();
+}
+
+private void writeDebug(String label, String value, PVector position, int line, color dye) {
+    fill(dye);
+    textAlign(RIGHT);
+    text(label, position.x, position.y + (line * 20));
+    textAlign(LEFT);
+    text(value, position.x, position.y + (line * 20));
+  }
