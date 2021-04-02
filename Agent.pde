@@ -4,6 +4,8 @@ public class Agent {
   private boolean render = true;
   private int direction = 0;
   private float speed = 1;
+  private float health = 100;
+  private boolean alive = true;
 
   private float pointerSize;
   private float pointerlength;
@@ -25,6 +27,10 @@ public class Agent {
   }
   
   public void update() {
+    if (!this.alive) {
+      return;
+    }
+
     this.move();
     
     if (this.render) {
@@ -33,7 +39,7 @@ public class Agent {
   }
   
   private void draw() {
-    fill(255);
+    fill(255, map(this.health, 0, 100, 0, 255));
     noStroke();
 
     pushMatrix();
@@ -61,5 +67,13 @@ public class Agent {
   
   public PVector getPosition() {
     return this.position;
+  }
+
+  public void takeDamage(float damage) {
+    this.health -= damage;
+
+    if (this.health <= 0) {
+      this.alive = false;
+    }
   }
 }

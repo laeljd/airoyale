@@ -16,7 +16,7 @@ public class FireRing {
   
   public FireRing(PVector position, float radius, float velocityShrink, float damage) {
     this.position = position;
-    this.radius = radius;
+    this.radius = radius / 2;
     this.velocityShrink = velocityShrink;
     this.damage = damage;
   }
@@ -35,12 +35,27 @@ public class FireRing {
     if (this.render) {
       noFill();
       stroke(255, 0, 0);
-      circle(this.position.x, this.position.y, this.radius);
+      circle(this.position.x, this.position.y, this.radius * 2);
     }
     
     if (this.debug) {
       this.writeDebug("Ring radius: ", String.valueOf(this.radius), this.debugPosition, 0);
       this.writeDebug("Ring position: ", "( " + this.position.x + " , " + this.position.y + " )", this.debugPosition, 1);
+    }
+  }
+  
+  private boolean isPointOutside(PVector point) {
+    float x1 = abs(point.x - this.position.x);
+    float x2 = abs(point.y - this.position.y);
+
+    return (x1 * x1) + (x2 * x2) > (this.radius * this.radius);
+  }
+
+  private void dealDamage(List<Agent> agents) {
+    for (Agent agent : agents) {
+      if (agent.alive && isPointOutside(agent.position)) {
+        agent.takeDamage(damage);
+      }
     }
   }
   
