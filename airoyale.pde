@@ -19,8 +19,9 @@ void setup() {
   }
 
   fireRing = new FireRing(new PVector(0, 0), width, 0.5, 1);
-  fireRing.setDebug(true);
-  fireRing.setDebugPosition(new PVector(-150,-200));
+  fireRing.dye = color(255, 60, 60);
+  fireRing.debug = true;
+  fireRing.debugPosition = new PVector(-150,-200);
 }
 
 void draw() {

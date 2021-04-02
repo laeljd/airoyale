@@ -32,7 +32,7 @@ public class Agent {
     }
 
     this.move();
-    
+
     if (this.render) {
       this.draw();
     }
@@ -70,7 +70,9 @@ public class Agent {
   }
 
   public void takeDamage(float damage) {
-    this.health -= damage;
+    if(this.alive) {
+      this.health -= damage;
+    }
 
     if (this.health <= 0) {
       this.alive = false;

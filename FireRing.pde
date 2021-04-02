@@ -4,9 +4,13 @@ public class FireRing {
   private float velocityShrink;
   private float damage;
   private boolean render = true;
-  private boolean debug = false;
-  private PVector debugPosition = new PVector(0,0);
+
+  // debuggers
+  public boolean debug = false;
+  public color dye = color(255, 0, 0);
+  public PVector debugPosition = new PVector(0,0);
   
+  // contructor defaut
   public FireRing() {
     this.position = new PVector(0, 0);
     this.radius = 100;
@@ -14,6 +18,7 @@ public class FireRing {
     this.damage = 0;
   }
   
+  // contructor
   public FireRing(PVector position, float radius, float velocityShrink, float damage) {
     this.position = position;
     this.radius = radius / 2;
@@ -34,7 +39,7 @@ public class FireRing {
   private void draw() {
     if (this.render) {
       noFill();
-      stroke(255, 0, 0);
+      stroke(this.dye);
       circle(this.position.x, this.position.y, this.radius * 2);
     }
     
@@ -53,14 +58,14 @@ public class FireRing {
 
   private void dealDamage(List<Agent> agents) {
     for (Agent agent : agents) {
-      if (agent.alive && isPointOutside(agent.position)) {
+      if (isPointOutside(agent.position)) {
         agent.takeDamage(damage);
       }
     }
   }
   
   private void writeDebug(String label, String value, PVector position, int line) {
-    fill(255);
+    fill(this.dye);
     textAlign(RIGHT);
     text(label, position.x, position.y + (line * 20));
     textAlign(LEFT);
@@ -70,15 +75,11 @@ public class FireRing {
   // getters and setters
   public float getDamage() { return this.damage; }
   public void setDamage(float damage) { this.damage = damage; }
-  
-  public void setDebug(boolean debug) { this.debug = debug; }
-
-  public void setDebugPosition(PVector debugPosition) { this.debugPosition = debugPosition; }
-  
+    
   public PVector getPosition() { return this.position; }
 
   public void setRender(boolean render) { this.render = render; }
-
+  
   public float getRadius() { return this.radius; }
   public void setRadius(float radius) { this.radius = radius; }
   
