@@ -6,6 +6,8 @@ public class Agent {
   private float speed = 1;
   private float health = 100;
   private boolean alive = true;
+  private Brain brain;
+  private float genes;
 
   private float pointerSize;
   private float pointerlength;
@@ -25,6 +27,16 @@ public class Agent {
   public Agent(PVector position, int size) {
     this.position = position;
     this.size = size;
+
+    this.pointerSize = this.size / 3;
+    this.pointerlength = this.size / 1.2;
+  }
+
+  public Agent(PVector position, int size, float[] genes) {
+    this.position = position;
+    this.size = size;
+    
+    this.brain = new Brain(sensors, genes, 1, actions);
 
     this.pointerSize = this.size / 3;
     this.pointerlength = this.size / 1.2;
