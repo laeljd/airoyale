@@ -9,9 +9,12 @@ public class Brain {
   public Brain (List<ISignal> sensors, float[] genes, int nLayers, List<IAction> actions) {
     this.sensors = sensors;
     this.genes = genes;
-    this.nLayers = nLayers;
+    this.nLayers = nLayers + 1; // add 1 because of the last layer (that computes the genes to the action)
     this.actions = actions;
     this.nNeurons = sensors.size() * nLayers;
+    this.layers = new ArrayList<Layer>();
+
+    this.generateLayers(this.sensors);
   }
 
   // get the dendites of the current neuron from the current layer
@@ -25,14 +28,14 @@ public class Brain {
       ISignal signal = signals.get(currentSignal);
 
       // offset to not repeat the genes
-      int layerOffset = ((signalsSize * nNeurons) * layerIndex);
+      int layerOffset = ((signalsSize * this.nNeurons) * layerIndex);
 
-      float currentGene = this.genes[currentSignal + (signalsSize * currentNeuron) + layerOffset];
+      int geneIndex = (currentSignal + (signalsSize * currentNeuron) + layerOffset);
 
-      // get the respective gene from the list of gene without repeating
-      float gene = (this.genes.length - 1 < currentSignal) ? currentGene : 0;
+      // test if the gene exists, without repeating
+      float geneValue = geneIndex < this.genes.length ? this.genes[geneIndex] : 0;
 
-      Dendrite dendrite = new Dendrite(signal, gene);
+      Dendrite dendrite = new Dendrite(signal, geneValue);
 
       dendrites.add(dendrite);
     }
@@ -41,12 +44,11 @@ public class Brain {
   }
 
   public void generateLayers(List<ISignal> signals) {
-    for (int currentLayer = 0; currentLayer < this.nLayers; currentLayer++) {
+    for (int currentLayer = 0; currentLayer < this.nLayers - 1; currentLayer++) {
       List<Neuron> neurons = new ArrayList<Neuron>();
       for (int currentNeuron = 0; currentNeuron < this.nNeurons; currentNeuron++) {
 
         List<ISignal> axons = currentLayer > 0 ? this.layers.get(currentLayer - 1).getSignals() : signals;
-        
         List<Dendrite> dendrites = this.getLayerDendrites(currentLayer, currentNeuron, axons);
 
         Neuron neuron = new Neuron(dendrites);
@@ -55,6 +57,18 @@ public class Brain {
       Layer layer = new Layer(neurons);
       this.layers.add(layer);
     }
+
+    // generate neurons layer for actions
+    List<Neuron> neurons = new ArrayList<Neuron>();
+    int layerSize = this.layers.size();
+    for (int currentAction = 0; currentAction < this.actions.size(); currentAction++) {
+      List<ISignal> axons = this.layers.get(layerSize - 1).getSignals();
+      List<Dendrite> dendrites = this.getLayerDendrites(layerSize, currentAction, axons);
+      Neuron neuron = new Neuron(dendrites);
+      neurons.add(neuron);
+    }
+    Layer layer = new Layer(neurons);
+    this.layers.add(layer);
   }
 
   public void think () {
@@ -64,9 +78,10 @@ public class Brain {
 
     List<ISignal> lastSignals = this.layers.get(this.nLayers - 1).getSignals();
 
-    for (IAction action : this.actions) {
-      action.setSignals(lastSignals);
-      action.activate();
+    for (int currentAction = 0; currentAction < this.actions.size(); currentAction++) {
+      ISignal actionSignal = lastSignals.get(currentAction);
+      this.actions.get(currentAction).setSignal(actionSignal);
+      this.actions.get(currentAction).activate();
     }
   }
 }

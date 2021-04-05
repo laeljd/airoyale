@@ -2,12 +2,12 @@ public class Agent {
   private PVector position;
   private int size;
   private boolean render = true;
-  private int direction = 0;
   private float speed = 1;
   private float health = 100;
+  private float direction = 50;
   private boolean alive = true;
   private Brain brain;
-  private float genes;
+  private float[] genes;
   private List<ISignal> sensors;
   private List<IAction> actions;
 
@@ -26,7 +26,7 @@ public class Agent {
     this.pointerlength = this.size / 1.2;
   }
   
-  public Agent(PVector position, int size, FireRing fireRing) {
+  public Agent(PVector position, int size) {
     this.position = position;
     this.size = size;
 
@@ -34,32 +34,33 @@ public class Agent {
     this.pointerlength = this.size / 1.2;
 
     this.sensors = new ArrayList<ISignal>();
-    this.sensors.add(new SensorAgentMapDirection(this, fireRing));
 
     this.actions = new ArrayList<IAction>();
     this.actions.add(new ActionAgentMove(this));
-
-    this.brain = new Brain(this.sensors, new float[]{1}, 1, this.actions);
   }
 
-  public Agent(PVector position, int size, float[] genes, List<ISignal> sensors) {
+  public Agent(PVector position, int size, float[] genes) {
     this.position = position;
     this.size = size;
-    this.sensors = sensors;
-    this.brain = new Brain(this.sensors, genes, 1, this.getActions());
+    this.genes = genes;
+
+    this.sensors = new ArrayList<ISignal>();
+
+    this.actions = new ArrayList<IAction>();
+    this.actions.add(new ActionAgentMove(this));
 
     this.pointerSize = this.size / 3;
     this.pointerlength = this.size / 1.2;
   }
   
   public void update() {
-    if (!this.alive) {
-      return;
-    }
+    // if (!this.alive) {
+    //   return;
+    // }
 
     // this.move();
-    // this.direction++;
-    //this.brain.think();
+    this.direction++;
+    this.brain.think();
 
     if (this.render) {
       this.draw();
@@ -67,7 +68,9 @@ public class Agent {
     
     if (this.debug) {
       this.writeDebug("", String.valueOf(this.health), new PVector(this.position.x -this.size, (this.position.y -this.size)), 0);
-      this.writeDebug("", String.valueOf(this.direction), new PVector(this.position.x -this.size, (this.position.y -this.size)), -1);
+      this.writeDebug("Direction: ", String.valueOf(this.direction), new PVector(this.position.x -this.size, (this.position.y -this.size)), -1);
+      this.writeDebug("Gene: ", String.valueOf(this.genes[0] + ";" + this.genes[1]), new PVector(this.position.x -this.size, (this.position.y -this.size)), -3);
+      this.writeDebug("Position: ", String.valueOf(this.position.x + " : " + this.position.y), new PVector(this.position.x -this.size, (this.position.y -this.size)), -10);
     }
   }
   
@@ -76,7 +79,6 @@ public class Agent {
     noStroke();
 
     pushMatrix();
-
     translate(this.position.x, this.position.y);
     rotate(radians(this.direction));
     triangle(this.pointerSize, -this.pointerSize, this.pointerlength, 0, this.pointerSize, this.pointerSize);
@@ -85,13 +87,21 @@ public class Agent {
     popMatrix();
   }
   
-  private void move() {
+  private void move(float speed) {
     float angle = radians(this.direction);
-    float x = cos(angle) * this.speed;
-    float y = sin(angle) * this.speed;
+    float x = cos(angle) * speed;
+    float y = sin(angle) * speed;
+
+    this.writeDebug("Speed: ", String.valueOf(speed), new PVector(this.position.x -this.size, (this.position.y -this.size)), -2);
 
     this.position.x += x;
     this.position.y += y;
+
+    this.direction = this.direction;
+  }
+
+  public void setSpeed(float speed) {
+    this.speed = speed;
   }
   
   public void setRender(boolean render) {
@@ -100,6 +110,10 @@ public class Agent {
   
   public PVector getPosition() {
     return this.position;
+  }
+
+  public float getDirection () {
+    return this.direction;
   }
 
   public int getSize() {
@@ -117,10 +131,8 @@ public class Agent {
   }
 
   public void addSensor(ISignal sensor){
-    // if(sensor == null) return;
-    // println("sensor   " + sensor );
-    
-    // this.sensors.add(sensor);
+    if(sensor == null) return;
+    this.sensors.add(sensor);
   }
   
   private void writeDebug(String label, String value, PVector position, int line) {
@@ -135,6 +147,14 @@ public class Agent {
     ArrayList<IAction> actions = new ArrayList<IAction>();
     actions.add(new ActionAgentMove(this));
     return actions;
+  }
+
+  public void wakeUp () {
+    this.brain = new Brain(this.sensors, this.genes, 1, this.actions);
+  }
+
+  public void rotateTo (float rotation) {
+    this.direction = rotation;
   }
 
 }

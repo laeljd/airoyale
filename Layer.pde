@@ -5,8 +5,11 @@ public class Layer {
     this.neurons = neurons;
   }
 
-  public ArrayList<ISignal> getSignals () {
-    ArrayList<ISignal> signals =  new ArrayList<ISignal>(this.neurons);
+  public List<ISignal> getSignals () {
+    List<ISignal> signals = new ArrayList<ISignal>(); // = new ArrayList<ISignal>(this.neurons);
+    for (Neuron neuron : this.neurons) {
+      signals.add(neuron);
+    }
     return signals;
   }
 

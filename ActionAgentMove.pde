@@ -1,23 +1,17 @@
 public class ActionAgentMove implements IAction {
   private Agent agent;
-  private List<ISignal> signal;
+  private ISignal signal;
 
   public ActionAgentMove (Agent agent) {
     this.agent = agent;
   }
 
-  public void setSignals(List<ISignal> signal){
+  public void setSignal(ISignal signal){
     this.signal = signal;
   }
 
-  public void activate(){
-    float synapse = 0;
-    for (ISignal signal : this.signal) {
-      synapse += signal.getSignal();
-    }
-
-    if(synapse > 0){
-      this.agent.move();
-    }
+  public void activate() {
+    float speed = -(cos((float)Math.PI * this.signal.getSignal()) - 3.2) / 2;
+    this.agent.move(3);
   }
 }
