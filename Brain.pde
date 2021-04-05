@@ -1,12 +1,12 @@
 public class Brain {
-  private List<Signal> sensors;
-  private List<Action> actions;
+  private List<ISignal> sensors;
+  private List<IAction> actions;
   private List<Layer> layers;
-  private float genes;
+  private float[] genes;
   private int nNeurons;
   private int nLayers;
 
-  public Brain (List<Signal> sensors, float[] genes, int nLayers, List<Action> actions) {
+  public Brain (List<ISignal> sensors, float[] genes, int nLayers, List<IAction> actions) {
     this.sensors = sensors;
     this.genes = genes;
     this.nLayers = nLayers;
@@ -15,16 +15,14 @@ public class Brain {
   }
 
   // get the dendites of the current neuron from the current layer
-  private List<Dendrite> getLayerDendrites(int layerIndex, int currentNeuron, List<Signal> signals) {
-    List<Dendrite> dendrites;
+  private List<Dendrite> getLayerDendrites(int layerIndex, int currentNeuron, List<ISignal> signals) {
+    List<Dendrite> dendrites = new ArrayList<Dendrite>();
     int signalsSize = signals.size();
     
     // for each neuron to generate the list of dendrites
     for (int currentSignal = 0; currentSignal < signalsSize; currentSignal++) {
       // get value of receiver
-      float signal = signals.get(currentSignal);
-
-      float currentGene = this.genes[1 + (2 * 1) + (2 + 1 * 0)];
+      ISignal signal = signals.get(currentSignal);
 
       // offset to not repeat the genes
       int layerOffset = ((signalsSize * nNeurons) * layerIndex);
@@ -42,12 +40,12 @@ public class Brain {
     return dendrites;
   }
 
-  public void generateLayers(List<Signal> signals) {
+  public void generateLayers(List<ISignal> signals) {
     for (int currentLayer = 0; currentLayer < this.nLayers; currentLayer++) {
-      List<Neuron> neurons;
+      List<Neuron> neurons = new ArrayList<Neuron>();
       for (int currentNeuron = 0; currentNeuron < this.nNeurons; currentNeuron++) {
 
-        List<Signal> axons = currentLayer > 0 ? this.layers[currentLayer - 1].getSignals() : signals;
+        List<ISignal> axons = currentLayer > 0 ? this.layers.get(currentLayer - 1).getSignals() : signals;
         
         List<Dendrite> dendrites = this.getLayerDendrites(currentLayer, currentNeuron, axons);
 
@@ -60,13 +58,13 @@ public class Brain {
   }
 
   public void think () {
-    for (Dendrite layer : this.layers) {
+    for (Layer layer : this.layers) {
       layer.process();
     }
 
-    List<Signal> lastSignals = this.layers[this.nLayers - 1].getSignals();
+    List<ISignal> lastSignals = this.layers.get(this.nLayers - 1).getSignals();
 
-    for (Action action : this.actions) {
+    for (IAction action : this.actions) {
       action.setSignals(lastSignals);
       action.activate();
     }

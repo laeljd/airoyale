@@ -1,3 +1,3 @@
-interface Signal {
+interface ISignal {
   public float getSignal();
 }

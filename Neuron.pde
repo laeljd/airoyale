@@ -1,4 +1,4 @@
-public class Neuron implements Signal {
+public class Neuron implements ISignal {
   private List<Dendrite> dendrites;
   private float axon;
   

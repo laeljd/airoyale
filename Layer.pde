@@ -1,15 +1,16 @@
 public class Layer {
   private List<Neuron> neurons;
 
-  public Layer (neurons) {
+  public Layer (List<Neuron> neurons) {
     this.neurons = neurons;
   }
 
-  public List<Signal> getSignals () {
-    return this.neurons;
+  public ArrayList<ISignal> getSignals () {
+    ArrayList<ISignal> signals =  new ArrayList<ISignal>(this.neurons);
+    return signals;
   }
 
-  public List<Signal> process () {
+  public void process () {
     for (Neuron neuron : this.neurons) {
       neuron.process();
     }

@@ -8,6 +8,8 @@ public class Agent {
   private boolean alive = true;
   private Brain brain;
   private float genes;
+  private List<ISignal> sensors;
+  private List<IAction> actions;
 
   private float pointerSize;
   private float pointerlength;
@@ -24,19 +26,27 @@ public class Agent {
     this.pointerlength = this.size / 1.2;
   }
   
-  public Agent(PVector position, int size) {
+  public Agent(PVector position, int size, FireRing fireRing) {
     this.position = position;
     this.size = size;
 
     this.pointerSize = this.size / 3;
     this.pointerlength = this.size / 1.2;
+
+    this.sensors = new ArrayList<ISignal>();
+    this.sensors.add(new SensorAgentMapDirection(this, fireRing));
+
+    this.actions = new ArrayList<IAction>();
+    this.actions.add(new ActionAgentMove(this));
+
+    this.brain = new Brain(this.sensors, new float[]{1}, 1, this.actions);
   }
 
-  public Agent(PVector position, int size, float[] genes) {
+  public Agent(PVector position, int size, float[] genes, List<ISignal> sensors) {
     this.position = position;
     this.size = size;
-    
-    this.brain = new Brain(sensors, genes, 1, actions);
+    this.sensors = sensors;
+    this.brain = new Brain(this.sensors, genes, 1, this.getActions());
 
     this.pointerSize = this.size / 3;
     this.pointerlength = this.size / 1.2;
@@ -47,7 +57,9 @@ public class Agent {
       return;
     }
 
-    this.move();
+    // this.move();
+    // this.direction++;
+    //this.brain.think();
 
     if (this.render) {
       this.draw();
@@ -55,6 +67,7 @@ public class Agent {
     
     if (this.debug) {
       this.writeDebug("", String.valueOf(this.health), new PVector(this.position.x -this.size, (this.position.y -this.size)), 0);
+      this.writeDebug("", String.valueOf(this.direction), new PVector(this.position.x -this.size, (this.position.y -this.size)), -1);
     }
   }
   
@@ -89,6 +102,10 @@ public class Agent {
     return this.position;
   }
 
+  public int getSize() {
+    return this.size;
+  }
+
   public void takeDamage(float damage) {
     if(this.alive) {
       this.health -= damage;
@@ -98,6 +115,13 @@ public class Agent {
       this.alive = false;
     }
   }
+
+  public void addSensor(ISignal sensor){
+    // if(sensor == null) return;
+    // println("sensor   " + sensor );
+    
+    // this.sensors.add(sensor);
+  }
   
   private void writeDebug(String label, String value, PVector position, int line) {
     fill(this.dye);
@@ -106,4 +130,11 @@ public class Agent {
     textAlign(LEFT);
     text(value, position.x, position.y + (line * 20));
   }
+
+  public ArrayList<IAction> getActions(){
+    ArrayList<IAction> actions = new ArrayList<IAction>();
+    actions.add(new ActionAgentMove(this));
+    return actions;
+  }
+
 }
