@@ -59,7 +59,7 @@ public class Agent {
     // }
 
     // this.move();
-    this.direction++;
+    // this.direction++;
     this.brain.think();
 
     if (this.render) {
@@ -96,8 +96,6 @@ public class Agent {
 
     this.position.x += x;
     this.position.y += y;
-
-    this.direction = this.direction;
   }
 
   public void setSpeed(float speed) {
@@ -157,4 +155,10 @@ public class Agent {
     this.direction = rotation;
   }
 
+  public void sprin (float rotation) {
+    this.direction += rotation;
+  }
+  
+
 }
+

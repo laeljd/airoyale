@@ -2,7 +2,7 @@ import java.util.*;
 
 List<Agent> agents = new ArrayList<Agent>();
 FireRing fireRing;
-int nAgents = 2;
+int nAgents = 1;
 
 int width = 1024;
 int height = 1024;
@@ -47,12 +47,22 @@ void draw() {
   fireRing.dealDamage(agents);
 }
 
+
+
 void keyPressed() {
   if (key == 32) loop = !loop;
 
   if(!loop) writeDebug("pausado. SPACE ou MOUSE 1", "", new PVector(translateX, translateY), -1, color(128, 128, 128));
 
   if(loop) loop(); else noLoop();
+}
+
+void keyTyped() {
+  // println("typed " + int(key) + " " + keyCode);
+  if (key == 100) this.agents.get(0).sprin(5);
+  if (key == 97) this.agents.get(0).sprin(-5);
+  if (key == 119) this.agents.get(0).move(5);
+  if (key == 115) this.agents.get(0).move(-5);
 }
 
 void mousePressed() {

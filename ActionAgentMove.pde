@@ -12,6 +12,6 @@ public class ActionAgentMove implements IAction {
 
   public void activate() {
     float speed = -(cos((float)Math.PI * this.signal.getSignal()) - 3.2) / 2;
-    this.agent.move(3);
+    // this.agent.move(speed);
   }
 }
