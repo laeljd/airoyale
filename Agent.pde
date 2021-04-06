@@ -1,56 +1,49 @@
-public class Agent {
-  private PVector position;
-  private int size;
-  private boolean render = true;
-  private float speed = 1;
-  private float health = 100;
-  private float direction = 50;
-  private boolean alive = true;
+public class Agent implements IPosition {
+
+  // body members
   private Brain brain;
   private float[] genes;
-  private List<ISignal> sensors;
-  private List<IAction> actions;
+  private List<ISignal> sensors = new ArrayList<ISignal>();
+  private List<IAction> actions = new ArrayList<IAction>();
 
+  // situation
+  private PVector position;
+  private float direction;
+  private float speed;
+  private float health = 100;
+  private boolean alive = true;
+
+  // esthetics
+  private boolean render = true;
+  private int size;
   private float pointerSize;
   private float pointerlength;
 
   // debuggers
+  public DebugManager dm;
   public boolean debug = false;
   public color dye = color(255);
   
+  // constructor defaut
   public Agent() {
     this.position = new PVector(0, 0);
     this.size = 30;
 
     this.pointerSize = this.size / 3;
     this.pointerlength = this.size / 1.2;
-  }
-  
-  public Agent(PVector position, int size) {
-    this.position = position;
-    this.size = size;
-
-    this.pointerSize = this.size / 3;
-    this.pointerlength = this.size / 1.2;
-
-    this.sensors = new ArrayList<ISignal>();
-
-    this.actions = new ArrayList<IAction>();
-    this.actions.add(new ActionAgentMove(this));
+    this.dm = new DebugManager(this.position, -this.size, true);
   }
 
+  // full constructor
   public Agent(PVector position, int size, float[] genes) {
     this.position = position;
     this.size = size;
     this.genes = genes;
-
-    this.sensors = new ArrayList<ISignal>();
-
-    this.actions = new ArrayList<IAction>();
-    this.actions.add(new ActionAgentMove(this));
-
     this.pointerSize = this.size / 3;
     this.pointerlength = this.size / 1.2;
+
+    this.actions.add(new ActionAgentMove(this));
+    this.dm = new DebugManager(this.position, -this.size, true);
   }
   
   public void update() {
@@ -58,24 +51,27 @@ public class Agent {
     //   return;
     // }
 
-    // this.move();
-    // this.direction++;
+    // this.direction+=10;
+
     this.brain.think();
+    this.move(this.speed);
 
     if (this.render) {
       this.draw();
     }
     
     if (this.debug) {
-      this.writeDebug("", String.valueOf(this.health), new PVector(this.position.x -this.size, (this.position.y -this.size)), 0);
-      this.writeDebug("Direction: ", String.valueOf(this.direction), new PVector(this.position.x -this.size, (this.position.y -this.size)), -1);
-      this.writeDebug("Gene: ", String.valueOf(this.genes[0] + ";" + this.genes[1]), new PVector(this.position.x -this.size, (this.position.y -this.size)), -3);
-      this.writeDebug("Position: ", String.valueOf(this.position.x + " : " + this.position.y), new PVector(this.position.x -this.size, (this.position.y -this.size)), -10);
+      this.dm.debug("health: ", String.valueOf(this.health), this.position, this.dye);
+      this.dm.debug("Direction: ", String.valueOf(this.direction), this.position, this.dye);
+      this.dm.debug("Gene: ", String.valueOf(this.genes[0] + ";" + this.genes[1]), this.position, this.dye);
+      this.dm.debug("position: ", String.valueOf("( " + (int)this.position.x + " : " + (int)this.position.y + " )"), this.position, this.dye);
+      this.dm.debug("speed: ", String.valueOf(this.speed), this.position, this.dye);
     }
+    this.dm.draw();
   }
   
   private void draw() {
-    fill(this.dye, map(this.health, 0, 100, 0, 255));
+    fill(this.dye, map(this.health, 0, 100, 50, 255));
     noStroke();
 
     pushMatrix();
@@ -89,11 +85,10 @@ public class Agent {
   
   private void move(float speed) {
     float angle = radians(this.direction);
+    
     float x = cos(angle) * speed;
     float y = sin(angle) * speed;
-
-    this.writeDebug("Speed: ", String.valueOf(speed), new PVector(this.position.x -this.size, (this.position.y -this.size)), -2);
-
+    
     this.position.x += x;
     this.position.y += y;
   }
@@ -133,14 +128,6 @@ public class Agent {
     this.sensors.add(sensor);
   }
   
-  private void writeDebug(String label, String value, PVector position, int line) {
-    fill(this.dye);
-    textAlign(RIGHT);
-    text(label, position.x, position.y + (line * 20));
-    textAlign(LEFT);
-    text(value, position.x, position.y + (line * 20));
-  }
-
   public ArrayList<IAction> getActions(){
     ArrayList<IAction> actions = new ArrayList<IAction>();
     actions.add(new ActionAgentMove(this));
@@ -159,6 +146,8 @@ public class Agent {
     this.direction += rotation;
   }
   
-
+  public void setDebug(boolean debug) {
+    this.debug = debug;
+  }
 }
 

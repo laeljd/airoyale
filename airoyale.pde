@@ -1,8 +1,9 @@
 import java.util.*;
 
+DebugManager dm;
 List<Agent> agents = new ArrayList<Agent>();
 FireRing fireRing;
-int nAgents = 1;
+int nAgents = 3;
 
 int width = 1024;
 int height = 1024;
@@ -13,22 +14,22 @@ boolean loop = false;
 void setup() {
   size(1024, 1024);
   noLoop();
-
-  fireRing = new FireRing(new PVector(0, 0), width, 0, 1);
-  fireRing.dye = color(255, 60, 60);
-  fireRing.debug = true;
-  fireRing.debugPosition = new PVector(-150,-200);  
+  dm = new DebugManager(new PVector(-translateX + 150,-translateY + 150), 0, false);
+  fireRing = new FireRing(new PVector(0,0), 100, width/2, 0.5, 1, dm);
+  fireRing.dye = color(255, 60, 60);  
+  fireRing.setDebug(true);
   
   for (int i = 0; i < nAgents; i++) {
-    float x = random(-100, 100);
-    float y = random(-100, 100);
+    float x = random(-translateX, translateX);
+    float y = random(-translateY, translateY);
     Agent agent = new Agent(new PVector(x, y), 15, new float[]{random(-1, 1), random(-1, 1)});
-    agent.debug = true;
+    // agent.setDebug(true);
     agent.dye = color(random(50, 255), random(50, 255), random(50, 255));
     agent.rotateTo(random(0, 361));
 
     // Sensors
-    ISignal sensor1 = new SensorAgentMapDirection(agent, fireRing);
+    ISignal sensor1 = new LocationSensorDirection(agent, fireRing, agent.dm, agent.dye + 200 );
+    // sensor1.setDebug(true);
     agent.addSensor(sensor1);
 
     agent.wakeUp();
@@ -45,6 +46,8 @@ void draw() {
   }
   fireRing.update();
   fireRing.dealDamage(agents);
+  
+  this.dm.draw();
 }
 
 

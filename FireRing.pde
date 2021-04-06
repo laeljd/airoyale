@@ -1,14 +1,16 @@
-public class FireRing {
+public class FireRing implements IPosition{
   private PVector position;
   private float radius;
+  private float minRadius;
+  private float maxRadius;
   private float velocityShrink;
   private float damage;
   private boolean render = true;
 
   // debuggers
+  private DebugManager dm;
   public boolean debug = false;
   public color dye = color(255, 0, 0);
-  public PVector debugPosition = new PVector(0,0);
   
   // contructor defaut
   public FireRing() {
@@ -19,34 +21,37 @@ public class FireRing {
   }
   
   // contructor
-  public FireRing(PVector position, float radius, float velocityShrink, float damage) {
+  public FireRing(PVector position, float minRadius, float maxRadius, float velocityShrink, float damage, DebugManager dm) {
     this.position = position;
-    this.radius = radius / 2;
+    this.minRadius = minRadius;
+    this.maxRadius = maxRadius;
+    this.radius = maxRadius;
     this.velocityShrink = velocityShrink;
     this.damage = damage;
+    this.dm = dm;
   }
   
   public void update() {
     if (this.radius > 0) {
-      this.radius -= this.velocityShrink;
+      if(this.radius > this.minRadius){
+        this.radius -= this.velocityShrink;
+      }
     }
     
     if (this.render) {
       this.draw();
+    } 
+    
+    if (this.debug) {
+      this.dm.debug("Ring radius: ", String.valueOf(this.radius), this.dm.getPosition(), this.dye);
+      this.dm.debug("Ring position: ", "( " + this.position.x + " , " + this.position.y + " )", this.dm.getPosition(), this.dye);
     }
   }
   
   private void draw() {
-    if (this.render) {
-      noFill();
-      stroke(this.dye);
-      circle(this.position.x, this.position.y, this.radius * 2);
-    }
-    
-    if (this.debug) {
-      this.writeDebug("Ring radius: ", String.valueOf(this.radius), this.debugPosition, 0);
-      this.writeDebug("Ring position: ", "( " + this.position.x + " , " + this.position.y + " )", this.debugPosition, 1);
-    }
+    noFill();
+    stroke(this.dye);
+    circle(this.position.x, this.position.y, this.radius * 2);
   }
   
   private boolean isPointOutside(PVector point) {
@@ -85,5 +90,6 @@ public class FireRing {
   
   public float getVelocityShrink() { return this.velocityShrink; }
   public void setVelocityShrink(float velocityShrink) { this.velocityShrink = velocityShrink; }  
- 
+
+   public void setDebug(boolean debug) { this.debug = debug; }
 }

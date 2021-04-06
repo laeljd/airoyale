@@ -1,7 +1,10 @@
 public class Neuron implements ISignal {
   private List<Dendrite> dendrites;
   private float axon;
-  
+
+   // debuggers
+  public boolean debug = false;
+
   public Neuron (List<Dendrite> dendrites) {
     this.dendrites = dendrites;
   }
@@ -15,6 +18,12 @@ public class Neuron implements ISignal {
   }
 
   public float getSignal() {
-    return this.axon;
+    float tanh = (float)Math.tanh(this.axon);
+    float derivateFromTanh = (float)Math.sinh(tanh);
+    return derivateFromTanh;
+  }
+
+  public void setDebug(boolean debug) {
+    this.debug = debug;
   }
 }
