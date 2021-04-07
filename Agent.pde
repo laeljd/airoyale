@@ -41,8 +41,8 @@ public class Agent implements IPosition {
     this.genes = genes;
     this.pointerSize = this.size / 3;
     this.pointerlength = this.size / 1.2;
-
-    this.actions.add(new ActionAgentMove(this));
+    
+    this.setupActions();
     this.dm = new DebugManager(this.position, -this.size, true);
   }
   
@@ -50,8 +50,6 @@ public class Agent implements IPosition {
     // if (!this.alive) {
     //   return;
     // }
-
-    // this.direction+=10;
 
     this.brain.think();
     this.move(this.speed);
@@ -131,10 +129,9 @@ public class Agent implements IPosition {
     this.sensors.add(sensor);
   }
   
-  public ArrayList<IAction> getActions(){
-    ArrayList<IAction> actions = new ArrayList<IAction>();
-    actions.add(new ActionAgentMove(this));
-    return actions;
+  public void setupActions(){
+    this.actions.add(new ActionAgentMove(this));
+    this.actions.add(new ActionRotate(this));
   }
 
   public void wakeUp () {
@@ -145,7 +142,7 @@ public class Agent implements IPosition {
     this.direction = rotation;
   }
 
-  public void sprin (float rotation) {
+  public void spin (float rotation) {
     float rotationMod = rotation % 360;
     this.direction += rotationMod;
   }
@@ -153,5 +150,8 @@ public class Agent implements IPosition {
   public void setDebug(boolean debug) {
     this.debug = debug;
   }
+  
+  public void setBrainDebug(boolean debug) {
+    this.brain.setDebug(debug) ;
+  }
 }
-

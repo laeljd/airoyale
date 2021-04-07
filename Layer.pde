@@ -18,4 +18,8 @@ public class Layer {
       neuron.process();
     }
   }
+
+  public List<Neuron> getNeurons () {
+    return this.neurons;
+  }
 }

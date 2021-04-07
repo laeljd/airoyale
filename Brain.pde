@@ -6,6 +6,15 @@ public class Brain {
   private int nNeurons;
   private int nLayers;
 
+  // debugging props
+  public boolean debug = false;
+  public int debugX = 50;
+  public int debugY = 50;
+  public int verticalOffset = 100;
+  public int horizontalOffset = 200;
+  public int dotsSize = 50;
+  public color dye = color(255);
+
   public Brain (List<ISignal> sensors, float[] genes, int nLayers, List<IAction> actions) {
     this.sensors = sensors;
     this.genes = genes;
@@ -33,8 +42,8 @@ public class Brain {
       int geneIndex = (currentSignal + (signalsSize * currentNeuron) + layerOffset);
 
       // test if the gene exists, without repeating
-      float geneValue = geneIndex < this.genes.length ? this.genes[geneIndex] : 0;
-
+      float geneValue = geneIndex < this.genes.length ? this.genes[geneIndex] : 1; // 1: otherwise it will return a 0 to the action //<>// //<>//
+ 
       Dendrite dendrite = new Dendrite(signal, geneValue);
 
       dendrites.add(dendrite);
@@ -72,6 +81,10 @@ public class Brain {
   }
 
   public void think () {
+    for (ISignal sensor : this.sensors) {
+      sensor.process();
+    }
+    
     for (Layer layer : this.layers) {
       layer.process();
     }
@@ -82,6 +95,62 @@ public class Brain {
       ISignal actionSignal = lastSignals.get(currentAction);
       this.actions.get(currentAction).setSignal(actionSignal);
       this.actions.get(currentAction).activate();
+    }
+
+    if (this.debug) this.debug();
+  }
+
+  public void setDebug (boolean debug) {
+    this.debug = debug;
+  }
+
+  private void debug () {
+    // draw sensors
+    stroke(this.dye);
+    strokeWeight(2);
+    for (int currentSensor = 0; currentSensor < this.sensors.size(); currentSensor++) {
+      int x = debugX - this.dotsSize / 2;
+      int y = (debugY + (currentSensor * this.verticalOffset)) - this.dotsSize / 2;
+
+      noFill();
+      rect(x, y, this.dotsSize, this.dotsSize);
+
+      float value = this.sensors.get(currentSensor).getSignal();
+      fill(this.dye);
+      textAlign(CENTER, CENTER);
+      text(String.format("%.3f", value), x + this.dotsSize / 2, y + this.dotsSize / 2);
+    }
+
+    // draw layers
+    for (int currentLayer = 0; currentLayer < this.layers.size(); ++currentLayer) {
+      List<Neuron> neurons = this.layers.get(currentLayer).getNeurons();
+      for (int currentNeuron = 0; currentNeuron < neurons.size(); ++currentNeuron) {
+        int x = debugX + this.horizontalOffset + (currentLayer * this.horizontalOffset);
+        int y = debugY + (currentNeuron * this.verticalOffset);
+
+        noFill();
+        ellipse(x, y, this.dotsSize, this.dotsSize);
+
+        float value = neurons.get(currentNeuron).getSignal();
+        fill(this.dye);
+        textAlign(CENTER, CENTER);
+        text(String.format("%.3f", value), x, y);
+      }
+    }
+
+    // draw actions
+    int actionsOffset = this.horizontalOffset + this.layers.size() * this.horizontalOffset;
+    for (int currentAction = 0; currentAction < this.actions.size(); currentAction++) {
+      int x = debugX - this.dotsSize / 2 + actionsOffset;
+      int y = (debugY + (currentAction * this.verticalOffset)) - this.dotsSize / 2;
+
+      noFill();
+      rect(x, y, this.dotsSize, this.dotsSize);
+
+      float value = this.actions.get(currentAction).getValue();
+      fill(this.dye);
+      textAlign(CENTER, CENTER);
+      text(String.format("%.3f", value), x + this.dotsSize / 2, y + this.dotsSize / 2);
     }
   }
 }

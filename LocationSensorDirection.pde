@@ -2,6 +2,7 @@ public class LocationSensorDirection implements ISignal {
 
   private Agent agent;
   private IPosition target;
+  private float value;
 
   // debuggers
   private DebugManager dm;
@@ -15,9 +16,8 @@ public class LocationSensorDirection implements ISignal {
     this.dm = dm;
     this.dye = dye == 0 ? color(255) : dye;
   }
-
-  public float getSignal() {
-
+  
+  public void process() {
     float dx = this.target.getPosition().x - this.agent.getPosition().x;
     float dy = this.target.getPosition().y - this.agent.getPosition().y;
     float targetDirection = degrees(atan2(dy, dx));
@@ -27,9 +27,8 @@ public class LocationSensorDirection implements ISignal {
 
     float diff = agentPositiveAngle - targetDirection; 
   
-    diff = abs(diff % 360) > 180 ? 180 - abs(diff % 180) : abs(diff % 180);
-    diff = (diff-90)/90;
-
+    this.value = abs(diff % 360) > 180 ? 180 - abs(diff % 180) : abs(diff % 180); 
+    
     if(this.debug) {
       pushMatrix();
         stroke(this.dye);
@@ -38,12 +37,14 @@ public class LocationSensorDirection implements ISignal {
         line(0, 0, dist(this.agent.getPosition().x, this.agent.getPosition().y, this.target.getPosition().x, this.target.getPosition().y), 0);
       popMatrix();
 
-      this.dm.debug("targer angle: ", String.valueOf(targetDirection), this.dm.getPosition(), this.dye);
+      this.dm.debug("target angle: ", String.valueOf(targetDirection), this.dm.getPosition(), this.dye);
       this.dm.debug("agent angle: ", String.valueOf(agentPositiveAngle), this.dm.getPosition(), this.dye);
-      this.dm.debug("diff agent/target: ", String.valueOf(diff), this.dm.getPosition(), this.dye);
+      this.dm.debug("diff agent/target: ", String.valueOf(this.value), this.dm.getPosition(), this.dye);
     }
+  }    
 
-    return diff;
+  public float getSignal() {
+    return (this.value-90)/90;
   }
   
   public void setDebug(boolean debug) {
