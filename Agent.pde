@@ -135,7 +135,7 @@ public class Agent implements IPosition {
   }
 
   public void wakeUp () {
-    this.brain = new Brain(this.sensors, this.genes, 1, this.actions);
+    this.brain = new Brain(this.sensors, this.genes, 3, this.actions);
   }
 
   public void rotateTo (float rotation) {

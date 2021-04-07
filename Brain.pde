@@ -55,7 +55,7 @@ public class Brain {
   public void generateLayers(List<ISignal> signals) {
     for (int currentLayer = 0; currentLayer < this.nLayers - 1; currentLayer++) {
       List<Neuron> neurons = new ArrayList<Neuron>();
-      for (int currentNeuron = 0; currentNeuron < this.nNeurons; currentNeuron++) {
+      for (int currentNeuron = 0; currentNeuron < this.nNeurons / (this.nLayers - 1); currentNeuron++) {
 
         List<ISignal> axons = currentLayer > 0 ? this.layers.get(currentLayer - 1).getSignals() : signals;
         List<Dendrite> dendrites = this.getLayerDendrites(currentLayer, currentNeuron, axons);

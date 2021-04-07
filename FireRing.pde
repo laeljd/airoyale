@@ -1,5 +1,5 @@
 public class FireRing implements IPosition{
-  private PVector position;
+  public PVector position;
   private float radius;
   private float minRadius;
   private float maxRadius;
