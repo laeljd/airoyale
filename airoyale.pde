@@ -22,7 +22,7 @@ void setup() {
   for (int i = 0; i < nAgents; i++) {
     float x = random(-translateX, translateX);
     float y = random(-translateY, translateY);
-    Agent agent = new Agent(new PVector(x, y), 15, new float[]{random(-1, 1), random(-1, 1)});
+    Agent agent = new Agent(new PVector(x, y), 15, new float[]{random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1)});
     // agent.setDebug(true);
     agent.dye = color(random(50, 255), random(50, 255), random(50, 255));
     agent.rotateTo(random(0, 361));

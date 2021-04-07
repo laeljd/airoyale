@@ -20,7 +20,7 @@ public class Neuron implements ISignal {
   public float getSignal() {
     float tanh = (float)Math.tanh(this.axon);
     float derivateFromTanh = (float)Math.sinh(tanh);
-    return derivateFromTanh;
+    return tanh;
   }
 
   public void setDebug(boolean debug) {

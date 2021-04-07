@@ -96,7 +96,10 @@ public class Agent implements IPosition {
   public void setSpeed(float speed) {
     this.speed = speed;
   }
-  
+
+  public float getSpeed() {
+    return this.speed;
+  }
   public void setRender(boolean render) {
     this.render = render;
   }
@@ -143,7 +146,8 @@ public class Agent implements IPosition {
   }
 
   public void sprin (float rotation) {
-    this.direction += rotation;
+    float rotationMod = rotation % 360;
+    this.direction += rotationMod;
   }
   
   public void setDebug(boolean debug) {
