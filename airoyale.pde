@@ -22,7 +22,13 @@ void setup() {
   for (int i = 0; i < nAgents; i++) {
     float x = random(0, width);
     float y = random(0, height);
-    Agent agent = new Agent(new PVector(x, y), 15, new float[]{random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1), random(-1, 1)});
+
+    float[] genes = new float[100];    
+    for (int j = 0; j < 100; ++j) {
+      genes[j] = random(-1, 1);
+    }
+    
+    Agent agent = new Agent(new PVector(x, y), 15, genes);
     //agent.setDebug(true);
     agent.dye = color(random(50, 255), random(50, 255), random(50, 255));
     agent.rotateTo(random(0, 361));
