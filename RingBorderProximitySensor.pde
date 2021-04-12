@@ -27,6 +27,10 @@ public class RingBorderProximitySensor implements ISignal {
     this.value = (ringRadius - dist(agentX, agentY, fireRingX, fireRingY)) / ringRadius;
     this.value = (float)Math.tanh(this.value);
 
+    // merge conflit discarted
+    // float dist = dist(agentX, agentY, fireRingX, fireRingY);
+    // this.value = (ringRadius - dist) / ringRadius;
+
     if(this.debug) {
       this.dm.debug("sensor: ", this.getName(), this.dm.getPosition(), this.dye);
       this.dm.debug("border proximity: ", String.valueOf(this.value), this.dm.getPosition(), this.dye);
