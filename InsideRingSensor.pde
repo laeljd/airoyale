@@ -2,7 +2,7 @@ public class InsideRingSensor implements ISignal {
 
   private Agent agent;
   private FireRing fireRing;
-  private boolean value;
+  private float value;
 
   // debuggers
   private DebugManager dm;
@@ -27,16 +27,24 @@ public class InsideRingSensor implements ISignal {
     boolean isInside = pow(agentX - fireRingX, 2) + pow(agentY - fireRingY, 2) < (ringRadius * ringRadius);
     
     if(this.debug) {
+      this.dm.debug("sensor: ", this.getName(), this.dm.getPosition(), this.dye);
       this.dm.debug("is inside: ", String.valueOf(isInside), this.dm.getPosition(), this.dye);
     }
-    this.value = isInside;
+    // this.value = isInside ? 1 : -1;
+    this.value = (pow(agentX - fireRingX, 2) + pow(agentY - fireRingY, 2)) / (ringRadius * ringRadius);
+    this.value = -(float)Math.tanh((this.value * 2) - 1);
+    // this.value = (float)Math.tanh(this.value);
   }
 
   public float getSignal() {
-    return this.value ? 1 : -1;
+    return this.value;
   }
   
   public void setDebug(boolean debug) {
     this.debug = debug;
+  }
+
+  public String getName(){
+    return "inside ring";
   }
 }

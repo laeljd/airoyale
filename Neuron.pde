@@ -1,4 +1,5 @@
 public class Neuron implements ISignal {
+  private String id;
   private List<Dendrite> dendrites;
   private float axon;
   private float value;
@@ -6,27 +7,31 @@ public class Neuron implements ISignal {
    // debuggers
   public boolean debug = false;
 
-  public Neuron (List<Dendrite> dendrites) {
+  public Neuron (List<Dendrite> dendrites, String id) {
     this.dendrites = dendrites;
+    this.id = id;
   }
 
   public void process() {
     float axon = 0;
-    for (Dendrite dendrite : this.dendrites) { //<>// //<>//
+    for (Dendrite dendrite : this.dendrites) { 
       axon += dendrite.getValue() * dendrite.getGene();
     }
-    this.axon = axon; //<>// //<>//
+     
+    this.axon = axon; 
+    // this.axon = (float)Math.tanh(this.axon);
+    // this.axon = (float)Math.sinh(this.axon);
   }
 
   public float getSignal() {
-    float tanh = (float)Math.tanh(this.axon);
-    // float derivateFromTanh = (float)Math.sinh(tanh);
-    // this.value = tanh;
-    this.value = this.axon;
-    return this.value;
+    return this.axon;
   }
 
   public void setDebug(boolean debug) {
     this.debug = debug;
+  }
+
+  public String getName(){
+    return this.id;
   }
 }

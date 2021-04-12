@@ -92,4 +92,8 @@ public class FireRing implements IPosition{
   public void setVelocityShrink(float velocityShrink) { this.velocityShrink = velocityShrink; }  
 
    public void setDebug(boolean debug) { this.debug = debug; }
+
+   public String getName() {
+     return "fire ring";
+   }
 }

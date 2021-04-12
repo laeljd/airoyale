@@ -28,6 +28,8 @@ public class LocationSensorDirection implements ISignal {
     float diff = agentPositiveAngle - targetDirection; 
   
     this.value = abs(diff % 360) > 180 ? 180 - abs(diff % 180) : abs(diff % 180); 
+    this.value = -(this.value-90)/90;
+    // this.value = this.value +1;
     
     if(this.debug) {
       pushMatrix();
@@ -37,6 +39,7 @@ public class LocationSensorDirection implements ISignal {
         line(0, 0, dist(this.agent.getPosition().x, this.agent.getPosition().y, this.target.getPosition().x, this.target.getPosition().y), 0);
       popMatrix();
 
+      this.dm.debug("sensor: ", this.getName(), this.dm.getPosition(), this.dye);
       this.dm.debug("target angle: ", String.valueOf(targetDirection), this.dm.getPosition(), this.dye);
       this.dm.debug("agent angle: ", String.valueOf(agentPositiveAngle), this.dm.getPosition(), this.dye);
       this.dm.debug("diff agent/target: ", String.valueOf(this.value), this.dm.getPosition(), this.dye);
@@ -44,10 +47,14 @@ public class LocationSensorDirection implements ISignal {
   }    
 
   public float getSignal() {
-    return (this.value-90)/90;
+    return this.value;
   }
   
   public void setDebug(boolean debug) {
     this.debug = debug;
+  }
+
+  public String getName(){
+    return "direction to " + target.getName();
   }
 }

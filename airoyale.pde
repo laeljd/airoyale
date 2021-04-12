@@ -19,7 +19,7 @@ void setup() {
   fireRing.dye = color(255, 60, 60);  
   fireRing.setDebug(true);
   
-  for (int i = 0; i < nAgents; i++) {
+  for (int agentIndex = 0; agentIndex < nAgents; agentIndex++) {
     float x = random(0, width);
     float y = random(0, height);
 
@@ -28,15 +28,15 @@ void setup() {
       genes[j] = random(-1, 1);
     }
     
-    Agent agent = new Agent(new PVector(x, y), 15, genes);
+    Agent agent = new Agent(new PVector(x, y), 15, genes, String.valueOf(agentIndex));
     // agent.setDebug(true);
     agent.dye = color(random(50, 255), random(50, 255), random(50, 255));
     agent.rotateTo(random(0, 361));
 
     // Sensors
     ISignal sensor1 = new LocationSensorDirection(agent, fireRing, agent.dm, agent.dye + 200);
-    ISignal sensor2 = new InsideRingSensor(agent, fireRing, agent.dm, agent.dye + 400);
-    ISignal sensor3 = new RingBorderProximitySensor(agent, fireRing, agent.dm, agent.dye + 600);
+    ISignal sensor2 = new RingBorderProximitySensor(agent, fireRing, agent.dm, agent.dye + 600);
+    ISignal sensor3 = new InsideRingSensor(agent, fireRing, agent.dm, agent.dye + 400);
     // sensor1.setDebug(true);
     // sensor2.setDebug(true);
     // sensor3.setDebug(true);
@@ -48,7 +48,10 @@ void setup() {
     agent.wakeUp();
     agents.add(agent);
   }
-  
+
+  agents.get(0).setDebug(true);
+  agents.get(0).getSensors().get(0).setDebug(true);
+  agents.get(0).getSensors().get(1).setDebug(true);
   agents.get(0).setBrainDebug(true);
 }
 

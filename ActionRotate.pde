@@ -16,6 +16,13 @@ public class ActionRotate implements IAction {
   }
 
   public void activate() {
-    this.agent.spin(this.signal.getSignal() * 10);
+    this.value = this.signal.getSignal();
+    // this.value += Math.signum(this.value);
+    this.value =  (float)Math.tanh(this.value) + Math.signum(this.value) * 5;
+    this.agent.spin(this.value);
+  }
+
+  public String getName() {
+    return "rotate";
   }
 }

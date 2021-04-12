@@ -60,7 +60,8 @@ public class Brain {
         List<ISignal> axons = currentLayer > 0 ? this.layers.get(currentLayer - 1).getSignals() : signals;
         List<Dendrite> dendrites = this.getLayerDendrites(currentLayer, currentNeuron, axons);
 
-        Neuron neuron = new Neuron(dendrites);
+        String neuronId = String.valueOf(currentLayer) + String.valueOf(currentNeuron);
+        Neuron neuron = new Neuron(dendrites, neuronId);
         neurons.add(neuron);
       }
       Layer layer = new Layer(neurons);
@@ -73,7 +74,9 @@ public class Brain {
     for (int currentAction = 0; currentAction < this.actions.size(); currentAction++) {
       List<ISignal> axons = this.layers.get(layerSize - 1).getSignals();
       List<Dendrite> dendrites = this.getLayerDendrites(layerSize, currentAction, axons);
-      Neuron neuron = new Neuron(dendrites);
+
+      String neuronId = String.valueOf(layerSize) + String.valueOf(currentAction);
+      Neuron neuron = new Neuron(dendrites, neuronId);
       neurons.add(neuron);
     }
     Layer layer = new Layer(neurons);
@@ -114,10 +117,13 @@ public class Brain {
 
       noFill();
       rect(x, y, this.dotsSize, this.dotsSize);
-
-      float value = this.sensors.get(currentSensor).getSignal();
+      
+      ISignal sensor = this.sensors.get(currentSensor);
+      float value = sensor.getSignal();
+      
       fill(this.dye);
       textAlign(CENTER, CENTER);
+      text(sensor.getName(), x + this.dotsSize / 2, y - 15);
       text(String.format("%.3f", value), x + this.dotsSize / 2, y + this.dotsSize / 2);
     }
 
@@ -131,9 +137,13 @@ public class Brain {
         noFill();
         ellipse(x, y, this.dotsSize, this.dotsSize);
 
-        float value = neurons.get(currentNeuron).getSignal();
+        ISignal neuron = neurons.get(currentNeuron);
+        float value = neuron.getSignal();
+
+
         fill(this.dye);
         textAlign(CENTER, CENTER);
+        // text(neuron.getName(), x, y - this.dotsSize / 2 - 15);
         text(String.format("%.3f", value), x, y);
       }
     }
@@ -147,9 +157,12 @@ public class Brain {
       noFill();
       rect(x, y, this.dotsSize, this.dotsSize);
 
-      float value = this.actions.get(currentAction).getValue();
+      IAction action = this.actions.get(currentAction);
+      float value = action.getValue();
+
       fill(this.dye);
       textAlign(CENTER, CENTER);
+      text(action.getName(), x + this.dotsSize / 2, y - 15);
       text(String.format("%.3f", value), x + this.dotsSize / 2, y + this.dotsSize / 2);
     }
   }

@@ -1,4 +1,5 @@
 public class Agent implements IPosition {
+  private String name;
 
   // body members
   private Brain brain;
@@ -26,6 +27,7 @@ public class Agent implements IPosition {
   
   // constructor defaut
   public Agent() {
+    this.name = String.valueOf(random(0, 1000000));
     this.position = new PVector(0, 0);
     this.size = 30;
 
@@ -35,7 +37,8 @@ public class Agent implements IPosition {
   }
 
   // full constructor
-  public Agent(PVector position, int size, float[] genes) {
+  public Agent(PVector position, int size, float[] genes, String name) {
+    this.name = name;
     this.position = position;
     this.size = size;
     this.genes = genes;
@@ -51,6 +54,15 @@ public class Agent implements IPosition {
     //   return;
     // }
 
+    if (this.debug) {
+      this.dm.debug("name: ", this.name, this.position, this.dye);
+      this.dm.debug("health: ", String.valueOf(this.health), this.position, this.dye);
+      this.dm.debug("Direction: ", String.valueOf(this.direction), this.position, this.dye);
+      this.dm.debug("Gene: ", String.valueOf(this.genes[0] + ";" + this.genes[1]), this.position, this.dye);
+      this.dm.debug("position: ", String.valueOf("( " + (int)this.position.x + " : " + (int)this.position.y + " )"), this.position, this.dye);
+      this.dm.debug("speed: ", String.valueOf(this.speed), this.position, this.dye);
+    }
+
     this.brain.think();
     this.move(this.speed);
 
@@ -58,13 +70,6 @@ public class Agent implements IPosition {
       this.draw();
     }
     
-    if (this.debug) {
-      this.dm.debug("health: ", String.valueOf(this.health), this.position, this.dye);
-      this.dm.debug("Direction: ", String.valueOf(this.direction), this.position, this.dye);
-      this.dm.debug("Gene: ", String.valueOf(this.genes[0] + ";" + this.genes[1]), this.position, this.dye);
-      this.dm.debug("position: ", String.valueOf("( " + (int)this.position.x + " : " + (int)this.position.y + " )"), this.position, this.dye);
-      this.dm.debug("speed: ", String.valueOf(this.speed), this.position, this.dye);
-    }
     this.dm.draw();
   }
   
@@ -135,7 +140,7 @@ public class Agent implements IPosition {
   }
 
   public void wakeUp () {
-    this.brain = new Brain(this.sensors, this.genes, 3, this.actions);
+    this.brain = new Brain(this.sensors, this.genes, 2, this.actions);
   }
 
   public void rotateTo (float rotation) {
@@ -143,8 +148,7 @@ public class Agent implements IPosition {
   }
 
   public void spin (float rotation) {
-    float rotationMod = rotation % 360;
-    this.direction += rotationMod;
+    this.direction = (this.direction += (rotation % 360)) % 360;
   }
   
   public void setDebug(boolean debug) {
@@ -154,4 +158,17 @@ public class Agent implements IPosition {
   public void setBrainDebug(boolean debug) {
     this.brain.setDebug(debug) ;
   }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public List<IAction> getActions() {
+    return this.actions;
+  }
+
+  public List<ISignal> getSensors() {
+    return this.sensors;
+  }
+
 }
