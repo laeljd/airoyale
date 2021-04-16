@@ -50,9 +50,9 @@ public class Agent implements IPosition {
   }
   
   public void update() {
-    // if (!this.alive) {
-    //   return;
-    // }
+    if (!this.alive) {
+      return;
+    }
 
     if (this.debug) {
       this.dm.debug("name: ", this.name, this.position, this.dye);
