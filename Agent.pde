@@ -11,6 +11,7 @@ public class Agent implements IPosition {
   private PVector position;
   private float direction;
   private float speed;
+  private float maxSpeed = 10;
   private float health = 100;
   private boolean alive = true;
 
@@ -50,9 +51,9 @@ public class Agent implements IPosition {
   }
   
   public void update() {
-    if (!this.alive) {
-      return;
-    }
+    // if (!this.alive) {
+    //   return;
+    // }
 
     if (this.debug) {
       this.dm.debug("name: ", this.name, this.position, this.dye);
@@ -140,7 +141,7 @@ public class Agent implements IPosition {
   }
 
   public void wakeUp () {
-    this.brain = new Brain(this.sensors, this.genes, 2, this.actions);
+    this.brain = new Brain(this.sensors, this.genes, 3, this.actions);
   }
 
   public void rotateTo (float rotation) {
@@ -171,4 +172,11 @@ public class Agent implements IPosition {
     return this.sensors;
   }
 
+  public float getMaxSpeed() {
+    return this.maxSpeed;
+  }
+
+  public float getHealth() {
+    return this.health;
+  }
 }

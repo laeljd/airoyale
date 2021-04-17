@@ -3,7 +3,7 @@ import java.util.*;
 DebugManager dm;
 List<Agent> agents = new ArrayList<Agent>();
 FireRing fireRing;
-int nAgents = 10000;
+int nAgents = 100;
 
 int width = 1024;
 int height = 1024;
@@ -12,7 +12,7 @@ int translateY = 0;
 boolean loop = false;
 
 //toggle render/debuggers
-boolean agentsRender = true;
+boolean agentsRender = false;
 boolean agentsDebugger = true;
 boolean ringRender = true;
 boolean ringDebugger = true;
@@ -21,7 +21,7 @@ void setup() {
   size(1024, 1024);
   noLoop();
   dm = new DebugManager(new PVector(150, 150), 0, false);
-  fireRing = new FireRing(new PVector(width / 2, height / 2), 100, width/2, 0.5, 1, dm);
+  fireRing = new FireRing(new PVector(width / 2, height / 2), 50, width/2, 0.5, 1, dm);
   fireRing.dye = color(255, 60, 60);  
   fireRing.setDebug(ringDebugger);
   
@@ -31,8 +31,8 @@ void setup() {
 
 
 
-    float[] genes = new float[10000];    
-    for (int j = 0; j < 10000; ++j) {
+    float[] genes = new float[1000];    
+    for (int j = 0; j < 1000; ++j) {
       genes[j] = random(-1, 1);
     }
     
@@ -44,8 +44,11 @@ void setup() {
 
     // Sensors
     ISignal sensor1 = new LocationSensorDirection(agent, fireRing, agent.dm, agent.dye + 200);
-    ISignal sensor2 = new RingBorderProximitySensor(agent, fireRing, agent.dm, agent.dye + 600);
-    ISignal sensor3 = new InsideRingSensor(agent, fireRing, agent.dm, agent.dye + 400);
+    ISignal sensor2 = new RingBorderProximitySensor(agent, fireRing, agent.dm, agent.dye + 400);
+    ISignal sensor3 = new InsideRingSensor(agent, fireRing, agent.dm, agent.dye + 600);
+    ISignal sensor4 = new OwnDirectionSensor(agent, agent.dm, agent.dye + 800);
+    ISignal sensor5 = new OwnSpeedSensor(agent, agent.dm, agent.dye + 1000);
+    ISignal sensor6 = new OwnHealthSensor(agent, agent.dm, agent.dye + 1200);
     // sensor1.setDebug(true);
     // sensor2.setDebug(true);
     // sensor3.setDebug(true);
@@ -53,6 +56,9 @@ void setup() {
     agent.addSensor(sensor1);
     agent.addSensor(sensor2);
     agent.addSensor(sensor3);
+    agent.addSensor(sensor4);
+    agent.addSensor(sensor5);
+    agent.addSensor(sensor6);
 
     agent.wakeUp();
     agents.add(agent);
@@ -68,9 +74,14 @@ void draw() {
   background(0);
   translate(translateX, translateY);
 
+  int count = 0;
   for (Agent agent : agents) {
     agent.update();
+    count += agent.getHealth() <= 0 ? 0 : 1;
   }
+
+  this.dm.debug("Agent count: ", String.valueOf(count), this.dm.getPosition(), color(255));
+
   fireRing.update();
   fireRing.dealDamage(agents);
   
@@ -78,6 +89,7 @@ void draw() {
   
   this.fireRing.position.x = mouseX;
   this.fireRing.position.y = mouseY;
+  
 }
 
 
