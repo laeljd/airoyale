@@ -24,16 +24,17 @@ public class InsideRingSensor implements ISignal {
     float fireRingY = this.fireRing.getPosition().y;
     float ringRadius = this.fireRing.getRadius();
     
-    boolean isInside = pow(agentX - fireRingX, 2) + pow(agentY - fireRingY, 2) < (ringRadius * ringRadius);
+    // boolean isInside = pow(agentX - fireRingX, 2) + pow(agentY - fireRingY, 2) < (ringRadius * ringRadius);
     
-    if(this.debug) {
-      this.dm.debug("sensor: ", this.getName(), this.dm.getPosition(), this.dye);
-      this.dm.debug("is inside: ", String.valueOf(isInside), this.dm.getPosition(), this.dye);
-    }
+   
     // this.value = isInside ? 1 : -1;
     this.value = (pow(agentX - fireRingX, 2) + pow(agentY - fireRingY, 2)) / (ringRadius * ringRadius);
-    this.value = -(float)Math.tanh((this.value * 2) - 1);
-    // this.value = (float)Math.tanh(this.value);
+    this.value = -(float)Math.tanh(this.value - 1);
+    // this.value = (float)Math.tanh(this.value); 
+    if(this.debug) {
+      this.dm.debug("sensor: ", this.getName(), this.dm.getPosition(), this.dye);
+      this.dm.debug("is inside: ", String.valueOf(this.value), this.dm.getPosition(), this.dye);
+    }
   }
 
   public float getSignal() {

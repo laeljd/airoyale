@@ -67,6 +67,10 @@ void setup() {
   agents.get(0).setDebug(true);
   agents.get(0).getSensors().get(0).setDebug(true);
   agents.get(0).getSensors().get(1).setDebug(true);
+  agents.get(0).getSensors().get(2).setDebug(true);
+  agents.get(0).getSensors().get(3).setDebug(true);
+  agents.get(0).getSensors().get(4).setDebug(true);
+  agents.get(0).getSensors().get(5).setDebug(true);
   agents.get(0).setBrainDebug(true);
 }
 
